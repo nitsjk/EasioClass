@@ -26,17 +26,7 @@ namespace Nits
            
         }
 
-        public static DateTime getUTCDate()
-        {
-            string qr = "dECLARE @UTCTime As DATETIME;SET @UTCTime = GETUTCDATE();SELECT DATEADD(MI, 330, @UTCTime) AS dat";
-            DataSet dsH = SqlHelper.ExecuteDataset(SqlHelper.Connect, CommandType.Text, qr);
-            DataRow dr = dsH.Tables[0].Rows[0];
-             dr["dat"].ToString();
-            DateTime dt = new DateTime();
-
-            return Convert.ToDateTime(dr["dat"].ToString());
-
-        }
+   
                 
         public static string SchoolLogo()
         {
@@ -54,6 +44,28 @@ namespace Nits
             DataSet dsH = SqlHelper.ExecuteDataset(SqlHelper.Connect, CommandType.Text, "select  top 1 * from OnlineService");
             DataRow dr = dsH.Tables[0].Rows[0];
             return dr["SQL"].ToString();
+
+
+        }
+
+        public static DateTime getUTCDate()
+        {
+            string qr = "dECLARE @UTCTime As DATETIME;SET @UTCTime = GETUTCDATE();SELECT DATEADD(MI, 330, @UTCTime) AS dat";
+            DataSet dsH = SqlHelper.ExecuteDataset(SqlHelper.Connect, CommandType.Text, qr);
+            DataRow dr = dsH.Tables[0].Rows[0];
+            dr["dat"].ToString();
+            DateTime dt = new DateTime();
+
+
+            return Convert.ToDateTime(dr["dat"].ToString());
+
+        }
+
+        public static string getUTCFinal(DateTime publishDate)
+        {
+            string Query = "SELECT  case when @publishDate =CAST(FLOOR(CAST(DATEADD(MI, 330, GETUTCDATE()) AS FLOAT))AS DATETIME) then 'equal'  when @publishDate >CAST(FLOOR(CAST(DATEADD(MI, 330, GETUTCDATE()) AS FLOAT))AS DATETIME) then 'greater' when @publishDate <CAST(FLOOR(CAST(DATEADD(MI, 330, GETUTCDATE()) AS FLOAT))AS DATETIME) then 'less' end";
+
+            return SqlHelper.ExecuteScalar(SqlHelper.Connect, CommandType.Text, Query, new SqlParameter("@publishDate", publishDate)).ToString();
 
 
         }
